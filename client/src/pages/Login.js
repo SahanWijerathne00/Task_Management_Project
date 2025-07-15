@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { FaHome } from "react-icons/fa"; // Home icon
+import { FaHome } from "react-icons/fa";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -92,7 +92,6 @@ function Login() {
           </Link>
         </p>
 
-        {/* ✅ Stylish Home Button */}
         <div className="flex justify-center">
           <Link
             to="/"

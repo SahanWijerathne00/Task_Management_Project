@@ -15,7 +15,6 @@ function Register() {
     try {
       await axios.post("http://localhost:5000/api/auth/register", form);
 
-      // ✅ Show success toast
       toast.success("🎉 Registration successful.......!", {
         position: "top-center",
         autoClose: 3000,
@@ -26,7 +25,6 @@ function Register() {
         },
       });
 
-      // ⏳ Wait 3 seconds before redirecting to login
       setTimeout(() => {
         navigate("/login");
       }, 3000);

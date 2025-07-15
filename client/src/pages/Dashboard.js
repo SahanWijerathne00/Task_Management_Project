@@ -113,7 +113,7 @@ function Dashboard() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      setTasks(res.data); // or however you're managing state
+      setTasks(res.data);
     } catch (err) {
       console.error("Failed to fetch all tasks:", err);
     }
