@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { FaHome } from "react-icons/fa"; // Home icon
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -18,12 +19,10 @@ function Login() {
         form
       );
 
-      // Save user info to localStorage
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("name", res.data.name);
       localStorage.setItem("userId", res.data.userId);
 
-      // ✅ Show success message (stay on login page)
       toast.success(`🎉 Login Successfully........!`, {
         position: "top-center",
         autoClose: 3000,
@@ -34,7 +33,6 @@ function Login() {
         },
       });
 
-      // ⏳ Wait 3 seconds before redirecting
       setTimeout(() => {
         navigate("/dashboard");
       }, 3000);
@@ -83,6 +81,7 @@ function Login() {
             Login
           </button>
         </form>
+
         <p className="text-center text-sm text-gray-600">
           Don’t have an account?{" "}
           <Link
@@ -92,6 +91,17 @@ function Login() {
             Register here
           </Link>
         </p>
+
+        {/* ✅ Stylish Home Button */}
+        <div className="flex justify-center">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-green-400 to-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:scale-105 transform transition-all duration-300"
+          >
+            <FaHome className="text-white" />
+            Home
+          </Link>
+        </div>
       </div>
     </div>
   );

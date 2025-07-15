@@ -13,6 +13,9 @@ function Dashboard() {
   const [tasks, setTasks] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [filterStatus, setFilterStatus] = useState("All");
+  const [filterPriority, setFilterPriority] = useState("All");
+  const [sortOrder, setSortOrder] = useState("");
 
   const [form, setForm] = useState({
     subject: "",
@@ -59,7 +62,6 @@ function Dashboard() {
         });
         toast.success("Task added!");
       }
-
       setForm({
         subject: "",
         description: "",
@@ -104,17 +106,28 @@ function Dashboard() {
     localStorage.clear();
     navigate("/login");
   };
+  const fetchAllTasks = async () => {
+    try {
+      const res = await axios.get("/api/tasks", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      setTasks(res.data); // or however you're managing state
+    } catch (err) {
+      console.error("Failed to fetch all tasks:", err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-400 via-purple-400 to-pink-400 p-6">
-      {/* Header */}
       <motion.div
         initial={{ y: -50, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         className="bg-white rounded-xl p-6 shadow-lg flex justify-between items-center max-w-4xl mx-auto mb-6"
       >
         <h1 className="text-2xl font-bold text-gray-700">
-          👋 Hello, {name}! Welcome to your Study Planner
+          👋 Hello, {name}!...Welcome to your Study Planner...
         </h1>
         <div className="flex space-x-2">
           <button
@@ -142,16 +155,70 @@ function Dashboard() {
         </div>
       </motion.div>
 
-      {/* Task List */}
+      {/* Filter & Sort Controls */}
+      <div className="max-w-4xl mx-auto flex flex-wrap justify-between items-center mb-4 gap-4">
+        <button
+          onClick={() => {
+            setFilterStatus("All");
+            setFilterPriority("All");
+            setSortOrder("");
+            fetchAllTasks();
+          }}
+          className="px-5 py-2 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-black font-bold rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300"
+        >
+          All Tasks
+        </button>
+
+        <select
+          className="p-2 rounded border"
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+        >
+          <option value="All">Filter by Status</option>
+          <option value="Pending">Pending</option>
+          <option value="Completed">Completed</option>
+        </select>
+
+        <select
+          className="p-2 rounded border"
+          value={filterPriority}
+          onChange={(e) => setFilterPriority(e.target.value)}
+        >
+          <option value="All">Filter by Priority</option>
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+
+        <select
+          className="p-2 rounded border"
+          value={sortOrder}
+          onChange={(e) => setSortOrder(e.target.value)}
+        >
+          <option value="">Sort by</option>
+          <option value="dueDate">Due Date</option>
+        </select>
+      </div>
+
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="max-w-4xl mx-auto space-y-4"
       >
-        {tasks.length === 0 ? (
-          <p className="text-white text-lg text-center">No tasks found.</p>
-        ) : (
-          tasks.map((task) => (
+        {tasks
+          .filter((task) => {
+            return (
+              (filterStatus === "All" || task.status === filterStatus) &&
+              (filterPriority === "All" || task.priority === filterPriority)
+            );
+          })
+          .sort((a, b) => {
+            if (sortOrder === "dueDate") {
+              return new Date(a.dueDate) - new Date(b.dueDate);
+            }
+            return 0;
+          })
+          .map((task) => (
             <motion.div
               key={task._id}
               className="bg-white rounded-lg p-4 shadow-md"
@@ -167,7 +234,6 @@ function Dashboard() {
                     Due: {task.dueDate.split("T")[0]} | Priority:{" "}
                     {task.priority}
                   </p>
-                  {/* Status Dropdown */}
                   <select
                     value={task.status}
                     onChange={async (e) => {
@@ -175,9 +241,7 @@ function Dashboard() {
                         await axios.put(
                           `http://localhost:5000/api/tasks/${task._id}`,
                           { status: e.target.value },
-                          {
-                            headers: { Authorization: `Bearer ${token}` },
-                          }
+                          { headers: { Authorization: `Bearer ${token}` } }
                         );
                         toast.success("Status updated");
                         fetchTasks();
@@ -196,7 +260,6 @@ function Dashboard() {
                   </select>
                 </div>
 
-                {/* Edit & Delete Buttons */}
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleEdit(task)}
@@ -213,8 +276,7 @@ function Dashboard() {
                 </div>
               </div>
             </motion.div>
-          ))
-        )}
+          ))}
       </motion.div>
 
       {/* Modal Form */}
@@ -288,7 +350,6 @@ function Dashboard() {
                   <option value="Pending">Pending</option>
                   <option value="Completed">Completed</option>
                 </select>
-
                 <div className="flex justify-between">
                   <button
                     type="submit"

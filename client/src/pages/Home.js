@@ -21,7 +21,7 @@ function Home() {
         <h1 className="text-4xl font-bold text-gray-800 mb-4 drop-shadow-md">
           📚 Study Planner
         </h1>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 mb-6 font-bold">
           Organize your study life, one task at a time.
         </p>
 
