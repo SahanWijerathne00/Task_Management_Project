@@ -16,6 +16,13 @@ This is a **Task Management Web App** designed for students to:
 
 ---
 
+## 🚀 Live Demo
+
+* 🌐 Frontend: [(https://task-management-project-ruby.vercel.app/)]
+* 🔗 Backend: [(https://taskmanagementproject.up.railway.app)]
+
+---
+
 ## 📦 Tech Stack
 
 * **Frontend**: React, Axios, Tailwind CSS, React Router, Framer Motion
@@ -102,3 +109,5 @@ Frontend runs at: `http://localhost:3000`
 * 🔒 Environment variable-based config
 
 ---
+
+
